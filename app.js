@@ -2,28 +2,59 @@ const createError = require("http-errors");
 const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
+const session = require("express-session");
 const logger = require("morgan");
 const dotenv = require("dotenv");
+const passport = require("passport");
+const nunjucks = require("nunjucks");
 
-const indexRouter = require("./routes/index");
-const usersRouter = require("./routes/users");
+const { sequelize } = require("./models");
+const pageRouter = require("./src/routes/index");
+const authRouter = require("./src/routes/auth");
+const sqlRouter = require("./src/routes/sql");
 
 dotenv.config();
+const passportConfig = require("./passport");
 
 const app = express();
+passportConfig();
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
-app.set("view engine", "pug");
+app.engine("html", require("ejs").renderFile);
+app.set("view engine", "ejs");
+nunjucks.configure("./src/views", {
+  express: app,
+  watch: true,
+});
+sequelize
+  .sync({ force: false })
+  .then(() => console.log("db 연결 성공"))
+  .catch((err) => console.error(err));
 
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(
+  session({
+    resave: false,
+    saveUninitialized: false,
+    secret: process.env.COOKIE_SECRET,
+    cookie: {
+      httpOnly: true,
+      secure: false,
+    },
+  })
+);
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/", indexRouter);
-app.use("/users", usersRouter);
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use("/", pageRouter);
+app.use("/auth", authRouter);
+app.use("/sql", sqlRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
