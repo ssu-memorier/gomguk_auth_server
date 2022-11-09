@@ -11,6 +11,7 @@ const nunjucks = require("nunjucks");
 const { sequelize } = require("./models");
 const pageRouter = require("./src/routes/index");
 const authRouter = require("./src/routes/auth");
+const reqRouter = require("./src/routes/req");
 const sqlRouter = require("./src/routes/sql");
 
 dotenv.config();
@@ -35,7 +36,7 @@ sequelize
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
+app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(
   session({
     resave: false,
@@ -54,6 +55,7 @@ app.use(passport.session());
 
 app.use("/", pageRouter);
 app.use("/auth", authRouter);
+app.use("/req", reqRouter);
 app.use("/sql", sqlRouter);
 
 // catch 404 and forward to error handler
@@ -65,7 +67,7 @@ app.use(function (req, res, next) {
 app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
-  res.locals.error = req.app.get("env") === "development" ? err : {};
+  res.locals.error = req.app.get("env") === "production" ? err : {};
 
   // render the error page
   res.status(err.status || 500);
