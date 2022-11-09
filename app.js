@@ -12,7 +12,6 @@ const { sequelize } = require("./models");
 const pageRouter = require("./src/routes/index");
 const authRouter = require("./src/routes/auth");
 const reqRouter = require("./src/routes/req");
-const sqlRouter = require("./src/routes/sql");
 
 dotenv.config();
 const passportConfig = require("./passport");
@@ -56,7 +55,6 @@ app.use(passport.session());
 app.use("/", pageRouter);
 app.use("/auth", authRouter);
 app.use("/req", reqRouter);
-app.use("/sql", sqlRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
