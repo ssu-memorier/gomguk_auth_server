@@ -22,4 +22,26 @@ router.get("/kakao/logout", (req, res) => {
   });
 });
 
+router.get(
+  "/google",
+  passport.authenticate("google", {
+    scope: ["profile", "email"],
+    accessType: "offline",
+    prompt: "consent",
+  })
+);
+router.get(
+  "/google/callback",
+  passport.authenticate("google", { failureRedirect: "/" }),
+  (req, res) => {
+    res.redirect("/");
+  }
+);
+router.get("/google/logout", (req, res) => {
+  req.session.destroy();
+  req.logout(() => {
+    res.redirect("/");
+  });
+});
+
 module.exports = router;
