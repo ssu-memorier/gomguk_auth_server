@@ -15,7 +15,10 @@
        <a class="logout" href="/auth/kakao/logout">로그아웃</a>
       {% elif user and user.provider=='google' %}
        <a class="logout" href="/auth/google/logout">로그아웃</a>
-      {% endif %}
+       {% endif %}
+       <form class="req test" action="req" method="get"> 
+         <button type="submit">request test</button>
+       </form>
     {% else %}
     <div class='login-section' id="kakao-login-section">
       <form class="login-form" action="auth/kakao" method="get">
@@ -28,9 +31,6 @@
       </form>
     </div>
     {% endif %}
-    <form class="sql test" action="sql" method="get"> 
-      <button type="submit">sql test</button>
-    </form>
     </div>
 </body>
 </html>
