@@ -1,0 +1,51 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Production Deploy CI
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches: ["main"]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setting .env
+        run: |
+          echo "COOKIE_SECRET=COOKIE_SECRET" >> .env
+          echo "DB_HOST"=$DB_HOST" >> .env
+          echo "DB_PORT"=$DB_PORT" >> .env
+          echo "DB_USERNAME"=$DB_USERNAME >> .env
+          echo "DB_PASSWORD"=$DB_PASSWORK >> .env
+          echo "KAKAO_ID=$KAKAO_ID" >> .env
+          echo "KAKAO_ADMIN_KEY=$KAKAO_ADMIN_KEY" >> .env
+          echo "GOOGLE_ID=$GOOGLE_ID" >> .env
+          echo "GOOGLE_SECRET=$GOOGLE_SECRET" >> .env
+        env:
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_PORT: ${{ secrets.DB_PORT }}
+          DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORK }}
+          COOKIE_SECRET: ${{ secrets.COOKIE_SECRET }}
+          KAKAO_ID: ${{ secrets.KAKAO_ID }}
+          KAKAO_ADMIN_KEY: ${{ secrets.KAKAO_ADMIN_KEY }}
+          GOOGLE_ID: ${{ secrets.GOOGLE_ID }}
+          GOOGLE_SECRET: ${{ secrets.GOOGLE_SECRET }}
+      - name: CloudFoundry push application with different directory
+        uses: jhunt/cf-push@main
+        with:
+          appdir: "." # use the appdir option to select a specif folder where the cf app is stored
+          api: ${{ secrets.PAAS_TA_URL }}
+          org: ${{ secrets.PAAS_TA_ORG }}
+          space: ${{ secrets.PAAS_TA_SPACE }}
+          username: ${{ secrets.PAAS_TA_USER }}
+          password: ${{ secrets.PAAS_TA_PASSWORD }}
+          manifest: manifest.yml
+          validate: true
