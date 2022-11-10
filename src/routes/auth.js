@@ -11,7 +11,10 @@ router.get(
     async (req, res) => {
         try {
             const jwtToken = await jwt.issue(req.user);
-            res.cookie('jwt', jwtToken).redirect('/');
+            res.cookie('jwt', jwtToken, {
+                httpOnly: true,
+                secure: true,
+            }).redirect('/');
         } catch (err) {
             console.error(err);
         }
@@ -38,7 +41,10 @@ router.get(
     passport.authenticate('google', { failureRedirect: '/' }),
     async (req, res) => {
         const jwtToken = await jwt.issue(req.user);
-        res.cookie('jwt', jwtToken).redirect('/');
+        res.cookie('jwt', jwtToken, {
+            httpOnly: true,
+            secure: true,
+        }).redirect('/');
     }
 );
 router.get('/google/logout', (req, res) => {
