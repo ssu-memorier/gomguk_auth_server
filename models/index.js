@@ -1,6 +1,5 @@
 const Sequelize = require('sequelize');
-const env = 'production';
-const config = require('../config')[env];
+const config = require('../config');
 const User = require('./user');
 
 const db = {};
