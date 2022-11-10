@@ -1,14 +1,14 @@
-const Sequelize = require("sequelize");
-const env = "production";
-const config = require("../config/config")[env];
-const User = require("./user");
+const Sequelize = require('sequelize');
+const env = 'production';
+const config = require('../config')[env];
+const User = require('./user');
 
 const db = {};
 const sequelize = new Sequelize(
-  config.database,
-  config.username,
-  config.password,
-  config
+    config.database,
+    config.username,
+    config.password,
+    config
 );
 
 db.sequelize = sequelize;
