@@ -2,7 +2,8 @@ const jwt = require('jsonwebtoken');
 const {
     TOKEN_EXPIRED,
     TOKEN_INVALID,
-} = require('../src/constants/tokenErrorType');
+    TOKEN_VERIFIED,
+} = require('../src/constants/tokenVerifyState');
 
 module.exports = {
     issue: async (user) => {
@@ -17,9 +18,8 @@ module.exports = {
         return result;
     },
     verify: async (token) => {
-        let decoded = '';
         try {
-            decoded = jwt.verify(token, process.env.JWT_SECRET);
+            jwt.verify(token, process.env.JWT_SECRET);
         } catch (err) {
             if (err.message === 'jwt expired') {
                 return TOKEN_EXPIRED;
@@ -27,6 +27,6 @@ module.exports = {
                 return TOKEN_INVALID;
             }
         }
-        return decoded;
+        return TOKEN_VERIFIED;
     },
 };
