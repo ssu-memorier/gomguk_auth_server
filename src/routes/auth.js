@@ -38,7 +38,6 @@ router.get(
     passport.authenticate('google', { failureRedirect: '/' }),
     async (req, res) => {
         const jwtToken = await jwt.issue(req.user);
-        console.log(jwtToken);
         res.cookie('jwt', jwtToken).redirect('/');
     }
 );
