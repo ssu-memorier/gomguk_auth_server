@@ -1,8 +1,10 @@
 const passport = require('passport');
 const KakaoStrategy = require('passport-kakao').Strategy;
-const { KAKAO_CALLBACK_URL } = require('../src/constants/passportCallbackUrl');
+const {
+    KAKAO_CALLBACK_URL,
+} = require('../../src/constants/passportCallbackUrl');
 
-const User = require('../models/user');
+const User = require('../../models/user');
 
 module.exports = () => {
     passport.use(

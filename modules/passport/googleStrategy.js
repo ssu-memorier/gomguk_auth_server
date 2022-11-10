@@ -1,7 +1,9 @@
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20');
-const User = require('../models/user');
-const { GOOGLE_CALLBACK_URL } = require('../src/constants/passportCallbackUrl');
+const User = require('../../models/user');
+const {
+    GOOGLE_CALLBACK_URL,
+} = require('../../src/constants/passportCallbackUrl');
 
 module.exports = () => {
     passport.use(
