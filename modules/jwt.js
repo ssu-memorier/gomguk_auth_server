@@ -10,7 +10,6 @@ module.exports = {
         const payload = {
             email: user.email,
             provider: user.provider,
-            refreshToken: user.refreshToken,
         };
         const result = {
             token: jwt.sign(payload, process.env.JWT_SECRET),
