@@ -1,7 +1,7 @@
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20');
 const User = require('../models/user');
-const { googleCallbackUrl } = require('../src/constants/passportCallbackUrl');
+const { GOOGLE_CALLBACK_URL } = require('../src/constants/passportCallbackUrl');
 
 module.exports = () => {
     passport.use(
@@ -9,7 +9,7 @@ module.exports = () => {
             {
                 clientID: process.env.GOOGLE_ID,
                 clientSecret: process.env.GOOGLE_SECRET,
-                callbackURL: googleCallbackUrl,
+                callbackURL: GOOGLE_CALLBACK_URL,
             },
             async (accessToken, refreshToken, profile, done) => {
                 const {
