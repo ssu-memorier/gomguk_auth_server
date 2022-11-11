@@ -5,10 +5,10 @@ const logoutModules = require('../../modules/oauth/logout');
 
 const router = express.Router();
 
-router.get('/kakao', passport.authenticate('kakao', { session: false }));
+router.get('/kakao', passport.authenticate('kakao'));
 router.get(
     '/kakao/callback',
-    passport.authenticate('kakao', { failureRedirect: '/' }),
+    passport.authenticate('kakao', { session: false, failureRedirect: '/' }),
     async (req, res) => {
         try {
             const jwtToken = await jwt.issue(req.user);
@@ -32,7 +32,6 @@ router.get('/kakao/logout', (req, res) => {
 router.get(
     '/google',
     passport.authenticate('google', {
-        session: false,
         scope: ['profile', 'email'],
         accessType: 'offline',
         prompt: 'consent',
@@ -40,7 +39,7 @@ router.get(
 );
 router.get(
     '/google/callback',
-    passport.authenticate('google', { failureRedirect: '/' }),
+    passport.authenticate('google', { session: false, failureRedirect: '/' }),
     async (req, res) => {
         const jwtToken = await jwt.issue(req.user);
         res.cookie('jwt', jwtToken, {
