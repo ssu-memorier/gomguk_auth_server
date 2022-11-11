@@ -6,16 +6,15 @@ const {
 } = require('../../constants/tokenVerifyState');
 
 exports.isLoggedIn = async (req, res, next) => {
-    const reqCookie = req.cookies;
-    const token = reqCookie.jwt.token;
+    const jwtToken = req.cookies.jwt.token;
 
-    const isValidToken = await jwt.verify(token);
-    if (req.isAuthenticated() && isValidToken === TOKEN_VERIFIED) {
+    const isValidToken = await jwt.verify(jwtToken);
+    if (isValidToken[0] === TOKEN_VERIFIED) {
         next();
     } else {
-        if (isValidToken === TOKEN_EXPIRED)
+        if (isValidToken[0] === TOKEN_EXPIRED)
             res.status(401).send('expired token');
-        else if (isValidToken === TOKEN_INVALID)
+        else if (isValidToken[0] === TOKEN_INVALID)
             res.status(401).send('invalid token');
     }
 };

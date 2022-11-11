@@ -1,34 +1,36 @@
 const axios = require('axios');
 const User = require('../../models/user');
+const { KAKAO_LOGOUT_URL } = require('../../src/constants/kakaoLogoutUrl');
 
 module.exports = {
-    kakao: async (user) => {
-        const url = 'https://kapi.kakao.com/v1/user/logout';
+    kakao: async (token) => {
+        const url = KAKAO_LOGOUT_URL;
         const headers = {
-            Authorization: `Bearer ${user.accessToken}`,
+            Authorization: `Bearer ${token}`,
         };
         try {
             await axios({
                 method: 'POST',
                 url,
                 headers,
-            });
-            User.update(
-                { accessToken: null },
-                { where: { snsId: user.dataValues.snsId } }
+            }).then(
+                User.update(
+                    { accessToken: null },
+                    { where: { accessToken: token } }
+                )
             );
         } catch (err) {
             console.error(err);
         }
     },
-    google: async (user) => {
+    google: async (token) => {
         try {
             User.update(
                 { accessToken: null },
-                { where: { snsId: user.dataValues.snsId } }
+                { where: { accessToken: token } }
             );
         } catch (err) {
-            console.error(err.response);
+            console.error(err);
         }
     },
 };

@@ -10,6 +10,7 @@ module.exports = {
         const payload = {
             email: user.email,
             provider: user.provider,
+            accessToken: user.accessToken,
         };
         const result = {
             token: jwt.sign(payload, process.env.JWT_SECRET),
@@ -17,15 +18,16 @@ module.exports = {
         return result;
     },
     verify: async (token) => {
+        let payload = '';
         try {
-            jwt.verify(token, process.env.JWT_SECRET);
+            payload = jwt.verify(token, process.env.JWT_SECRET);
         } catch (err) {
             if (err.message === 'jwt expired') {
-                return TOKEN_EXPIRED;
+                return [TOKEN_EXPIRED, ''];
             } else {
-                return TOKEN_INVALID;
+                return [TOKEN_INVALID, ''];
             }
         }
-        return TOKEN_VERIFIED;
+        return [TOKEN_VERIFIED, payload];
     },
 };

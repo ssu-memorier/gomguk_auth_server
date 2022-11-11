@@ -15,7 +15,7 @@ module.exports = () => {
             },
             async (accessToken, refreshToken, profile, done) => {
                 try {
-                    const exUser = await User.findOne({
+                    let exUser = await User.findOne({
                         where: {
                             snsId: profile.id,
                             provider: 'kakao',
@@ -28,6 +28,12 @@ module.exports = () => {
                             { accessToken: accessToken },
                             { where: { snsId: profile.id } }
                         );
+                        exUser = await User.findOne({
+                            where: {
+                                snsId: profile.id,
+                                provider: 'kakao',
+                            },
+                        });
                         done(null, exUser);
                     } else {
                         const newUser = await User.create({

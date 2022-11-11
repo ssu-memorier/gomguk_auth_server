@@ -2,6 +2,7 @@ const express = require('express');
 const passport = require('passport');
 const jwt = require('../../modules/jwt');
 const logoutModules = require('../../modules/oauth/logout');
+const { isLoggedIn } = require('../routes/middlewares/loginCheckMiddleware');
 
 const router = express.Router();
 
@@ -21,8 +22,9 @@ router.get(
         }
     }
 );
-router.get('/kakao/logout', (req, res) => {
-    logoutModules.kakao(req.user);
+router.get('/kakao/logout', isLoggedIn, async (req, res) => {
+    const jwtPayload = await getPayload(req);
+    logoutModules.kakao(jwtPayload.accessToken);
     res.cookie('jwt', null, { maxAge: 0 });
     req.logout(() => {
         res.redirect('/');
@@ -48,12 +50,18 @@ router.get(
         }).redirect('/');
     }
 );
-router.get('/google/logout', (req, res) => {
-    logoutModules.google(req.user);
+router.get('/google/logout', isLoggedIn, async (req, res) => {
+    const jwtPayload = await getPayload(req);
+    logoutModules.google(jwtPayload.accessToken);
     res.cookie('jwt', null, { maxAge: 0 });
     req.logout(() => {
         res.redirect('/');
     });
 });
+
+const getPayload = async (req) => {
+    const [_, payload] = await jwt.verify(req.cookies.jwt.token);
+    return payload;
+};
 
 module.exports = router;
