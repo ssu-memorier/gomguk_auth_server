@@ -23,9 +23,9 @@ module.exports = {
             payload = jwt.verify(token, process.env.JWT_SECRET);
         } catch (err) {
             if (err.message === 'jwt expired') {
-                return [TOKEN_EXPIRED, ''];
+                return [TOKEN_EXPIRED, _];
             } else {
-                return [TOKEN_INVALID, ''];
+                return [TOKEN_INVALID, _];
             }
         }
         return [TOKEN_VERIFIED, payload];
