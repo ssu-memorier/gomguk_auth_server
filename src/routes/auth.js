@@ -1,10 +1,11 @@
 const express = require('express');
 const passport = require('passport');
 const jwt = require('../../modules/jwt');
+const logoutModules = require('../../modules/oauth/logout');
 
 const router = express.Router();
 
-router.get('/kakao', passport.authenticate('kakao'));
+router.get('/kakao', passport.authenticate('kakao', { session: false }));
 router.get(
     '/kakao/callback',
     passport.authenticate('kakao', { failureRedirect: '/' }),
@@ -21,7 +22,7 @@ router.get(
     }
 );
 router.get('/kakao/logout', (req, res) => {
-    req.session.destroy();
+    logoutModules.kakao(req.user);
     res.cookie('jwt', null, { maxAge: 0 });
     req.logout(() => {
         res.redirect('/');
@@ -31,6 +32,7 @@ router.get('/kakao/logout', (req, res) => {
 router.get(
     '/google',
     passport.authenticate('google', {
+        session: false,
         scope: ['profile', 'email'],
         accessType: 'offline',
         prompt: 'consent',
@@ -48,7 +50,7 @@ router.get(
     }
 );
 router.get('/google/logout', (req, res) => {
-    req.session.destroy();
+    logoutModules.google(req.user);
     res.cookie('jwt', null, { maxAge: 0 });
     req.logout(() => {
         res.redirect('/');

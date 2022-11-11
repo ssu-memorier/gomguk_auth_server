@@ -21,7 +21,13 @@ module.exports = () => {
                     const exUser = await User.findOne({
                         where: { snsId: sub, provider: 'google' },
                     });
-                    if (exUser) {
+                    if (exUser && exUser.accessToken !== null) {
+                        done(null, exUser);
+                    } else if (exUser && exUser.accessToken === null) {
+                        await User.update(
+                            { accessToken: accessToken },
+                            { where: { snsId: sub } }
+                        );
                         done(null, exUser);
                     } else {
                         const newUser = await User.create({
@@ -29,6 +35,7 @@ module.exports = () => {
                             name: name,
                             snsId: sub,
                             provider: 'google',
+                            accessToken: accessToken,
                             refreshToken: refreshToken,
                         });
                         done(null, newUser);
