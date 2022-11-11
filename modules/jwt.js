@@ -13,7 +13,9 @@ module.exports = {
             accessToken: user.accessToken,
         };
         const result = {
-            token: jwt.sign(payload, process.env.JWT_SECRET),
+            token: jwt.sign(payload, process.env.JWT_SECRET, {
+                expiresIn: '6h',
+            }),
         };
         return result;
     },
@@ -23,9 +25,9 @@ module.exports = {
             payload = jwt.verify(token, process.env.JWT_SECRET);
         } catch (err) {
             if (err.message === 'jwt expired') {
-                return [TOKEN_EXPIRED, _];
+                return [TOKEN_EXPIRED, ''];
             } else {
-                return [TOKEN_INVALID, _];
+                return [TOKEN_INVALID, ''];
             }
         }
         return [TOKEN_VERIFIED, payload];
