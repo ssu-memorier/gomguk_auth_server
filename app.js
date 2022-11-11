@@ -2,7 +2,6 @@ const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
-const session = require('express-session');
 const logger = require('morgan');
 const dotenv = require('dotenv');
 const passport = require('passport');
@@ -13,7 +12,7 @@ const authRouter = require('./src/routes/auth');
 const reqRouter = require('./src/routes/req');
 
 dotenv.config();
-const passportConfig = require('./passport');
+const passportConfig = require('./modules/passport');
 
 const app = express();
 passportConfig();
@@ -24,21 +23,9 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
-app.use(
-    session({
-        resave: false,
-        saveUninitialized: false,
-        secret: process.env.COOKIE_SECRET,
-        cookie: {
-            httpOnly: true,
-            secure: false,
-        },
-    })
-);
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(passport.initialize());
-app.use(passport.session());
 
 app.use('/', pageRouter);
 app.use('/auth', authRouter);

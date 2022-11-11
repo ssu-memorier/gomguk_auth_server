@@ -1,7 +1,9 @@
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20');
-const User = require('../models/user');
-const { GOOGLE_CALLBACK_URL } = require('../src/constants/passportCallbackUrl');
+const User = require('../../models/user');
+const {
+    GOOGLE_CALLBACK_URL,
+} = require('../../src/constants/passportCallbackUrl');
 
 module.exports = () => {
     passport.use(
@@ -16,10 +18,22 @@ module.exports = () => {
                     _json: { sub, name, email },
                 } = profile;
                 try {
-                    const exUser = await User.findOne({
+                    let exUser = await User.findOne({
                         where: { snsId: sub, provider: 'google' },
                     });
-                    if (exUser) {
+                    if (exUser && exUser.accessToken !== null) {
+                        done(null, exUser);
+                    } else if (exUser && exUser.accessToken === null) {
+                        await User.update(
+                            { accessToken: accessToken },
+                            { where: { snsId: sub } }
+                        );
+                        exUser = await User.findOne({
+                            where: {
+                                snsId: sub,
+                                provider: 'google',
+                            },
+                        });
                         done(null, exUser);
                     } else {
                         const newUser = await User.create({
@@ -27,6 +41,7 @@ module.exports = () => {
                             name: name,
                             snsId: sub,
                             provider: 'google',
+                            accessToken: accessToken,
                             refreshToken: refreshToken,
                         });
                         done(null, newUser);

@@ -1,8 +1,10 @@
 const passport = require('passport');
 const KakaoStrategy = require('passport-kakao').Strategy;
-const { KAKAO_CALLBACK_URL } = require('../src/constants/passportCallbackUrl');
+const {
+    KAKAO_CALLBACK_URL,
+} = require('../../src/constants/passportCallbackUrl');
 
-const User = require('../models/user');
+const User = require('../../models/user');
 
 module.exports = () => {
     passport.use(
@@ -13,10 +15,25 @@ module.exports = () => {
             },
             async (accessToken, refreshToken, profile, done) => {
                 try {
-                    const exUser = await User.findOne({
-                        where: { snsId: profile.id, provider: 'kakao' },
+                    let exUser = await User.findOne({
+                        where: {
+                            snsId: profile.id,
+                            provider: 'kakao',
+                        },
                     });
-                    if (exUser) {
+                    if (exUser && exUser.accessToken !== null) {
+                        done(null, exUser);
+                    } else if (exUser && exUser.accessToken === null) {
+                        await User.update(
+                            { accessToken: accessToken },
+                            { where: { snsId: profile.id } }
+                        );
+                        exUser = await User.findOne({
+                            where: {
+                                snsId: profile.id,
+                                provider: 'kakao',
+                            },
+                        });
                         done(null, exUser);
                     } else {
                         const newUser = await User.create({
@@ -24,6 +41,7 @@ module.exports = () => {
                             name: profile.displayName,
                             snsId: profile.id,
                             provider: 'kakao',
+                            accessToken: accessToken,
                             refreshToken: refreshToken,
                         });
                         done(null, newUser);
