@@ -2,7 +2,7 @@ const express = require('express');
 const passport = require('passport');
 const jwt = require('../../modules/jwt');
 const logoutModules = require('../../modules/oauth/logout');
-const { isLoggedIn } = require('../routes/middlewares/loginCheckMiddleware');
+const { isTokenValid } = require('./middlewares/tokenValidateMiddleware');
 
 const router = express.Router();
 
@@ -22,7 +22,7 @@ router.get(
         }
     }
 );
-router.get('/kakao/logout', isLoggedIn, async (req, res) => {
+router.get('/kakao/logout', isTokenValid, async (req, res) => {
     const jwtPayload = await getPayload(req);
     logoutModules.kakao(jwtPayload.accessToken);
     res.cookie('jwt', null, { maxAge: 0 });
@@ -50,7 +50,7 @@ router.get(
         }).redirect('/');
     }
 );
-router.get('/google/logout', isLoggedIn, async (req, res) => {
+router.get('/google/logout', isTokenValid, async (req, res) => {
     const jwtPayload = await getPayload(req);
     logoutModules.google(jwtPayload.accessToken);
     res.cookie('jwt', null, { maxAge: 0 });
