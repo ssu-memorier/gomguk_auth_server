@@ -23,11 +23,11 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
-app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(passport.initialize());
 
 app.use('/', pageRouter);
+app.use(express.static(path.join(__dirname, 'public')));
 app.use('/auth', authRouter);
 app.use('/req', reqRouter);
 
