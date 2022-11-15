@@ -20,16 +20,24 @@ module.exports = {
         return result;
     },
     verify: async (token) => {
+        try {
+            jwt.verify(token, process.env.JWT_SECRET);
+        } catch (err) {
+            if (err.message === 'jwt expired') {
+                return TOKEN_EXPIRED;
+            } else {
+                return TOKEN_INVALID;
+            }
+        }
+        return TOKEN_VERIFIED;
+    },
+    getPayload: async (token) => {
         let payload = '';
         try {
             payload = jwt.verify(token, process.env.JWT_SECRET);
         } catch (err) {
-            if (err.message === 'jwt expired') {
-                return [TOKEN_EXPIRED, ''];
-            } else {
-                return [TOKEN_INVALID, ''];
-            }
+            console.error(err);
         }
-        return [TOKEN_VERIFIED, payload];
+        return payload;
     },
 };

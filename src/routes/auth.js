@@ -1,10 +1,32 @@
 const express = require('express');
 const passport = require('passport');
 const jwt = require('../../modules/jwt');
+const User = require('../../models/user');
 const logoutModules = require('../../modules/oauth/logout');
-const { isLoggedIn } = require('../routes/middlewares/loginCheckMiddleware');
+const { isTokenValid } = require('./middlewares/tokenValidateMiddleware');
 
 const router = express.Router();
+
+router.get('/profile', isTokenValid, async (req, res) => {
+    try {
+        const payload = await jwt.getPayload(req.cookies.jwt.token);
+        const user = await User.findOne({
+            where: {
+                email: payload.email,
+                provider: payload.provider,
+            },
+        });
+        res.status(200).json({
+            code: 200,
+            name: user.name,
+        });
+    } catch (err) {
+        return res.status(401).json({
+            code: 401,
+            msg: '401 unauthorized',
+        });
+    }
+});
 
 router.get('/kakao', passport.authenticate('kakao'));
 router.get(
@@ -22,7 +44,7 @@ router.get(
         }
     }
 );
-router.get('/kakao/logout', isLoggedIn, async (req, res) => {
+router.get('/kakao/logout', isTokenValid, async (req, res) => {
     const jwtPayload = await getPayload(req);
     logoutModules.kakao(jwtPayload.accessToken);
     res.cookie('jwt', null, { maxAge: 0 });
@@ -50,7 +72,7 @@ router.get(
         }).redirect('/');
     }
 );
-router.get('/google/logout', isLoggedIn, async (req, res) => {
+router.get('/google/logout', isTokenValid, async (req, res) => {
     const jwtPayload = await getPayload(req);
     logoutModules.google(jwtPayload.accessToken);
     res.cookie('jwt', null, { maxAge: 0 });

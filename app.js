@@ -7,7 +7,6 @@ const dotenv = require('dotenv');
 const passport = require('passport');
 
 const { sequelize } = require('./models');
-const pageRouter = require('./src/routes/index');
 const authRouter = require('./src/routes/auth');
 const reqRouter = require('./src/routes/req');
 
@@ -23,11 +22,10 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
-app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(passport.initialize());
 
-app.use('/', pageRouter);
+app.use(express.static(path.join(__dirname, 'public')));
 app.use('/auth', authRouter);
 app.use('/req', reqRouter);
 

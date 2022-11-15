@@ -5,7 +5,7 @@ const {
     TOKEN_VERIFIED,
 } = require('../../constants/tokenVerifyState');
 
-exports.isLoggedIn = async (req, res, next) => {
+exports.isTokenValid = async (req, res, next) => {
     const jwtToken = req.cookies.jwt.token;
 
     const isValidToken = await jwt.verify(jwtToken);
