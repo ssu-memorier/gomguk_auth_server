@@ -11,7 +11,6 @@ const checkExpired = async (res, payload) => {
     const leftTime = payload.exp - currentTime;
 
     if (leftTime < ONE_HOUR) {
-        console.log('재발급');
         res.cookie('jwt', null, { maxAge: 0 });
         const newJwtToken = await jwt.issue(payload);
         res.cookie('jwt', newJwtToken, {
@@ -44,6 +43,6 @@ exports.isTokenValid = async (req, res, next) => {
                 });
         }
     } catch (err) {
-        console.log(err);
+        console.error(err);
     }
 };
