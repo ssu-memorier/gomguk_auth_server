@@ -21,9 +21,7 @@ module.exports = () => {
                             provider: 'kakao',
                         },
                     });
-                    if (exUser && exUser.accessToken !== null) {
-                        done(null, exUser);
-                    } else if (exUser && exUser.accessToken === null) {
+                    if (exUser) {
                         await User.update(
                             { accessToken: accessToken },
                             { where: { snsId: profile.id } }
