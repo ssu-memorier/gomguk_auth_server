@@ -78,7 +78,6 @@ router.get(
 );
 
 const getPayload = async (req) => {
-    console.log(req.cookies.jwt.token);
     const payload = await jwt.getPayload(req.cookies.jwt.token);
     return payload;
 };
