@@ -8,7 +8,6 @@ router.get(
     '/callback',
     passport.authenticate('kakao', { session: false, failureRedirect: '/' }),
     async (req, res) => {
-        console.log(req.user);
         try {
             const jwtToken = await jwt.issue(req.user);
             res.cookie('jwt', jwtToken, {
