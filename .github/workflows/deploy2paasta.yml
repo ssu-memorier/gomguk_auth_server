@@ -19,7 +19,7 @@ jobs:
               uses: actions/checkout@v2
             - name: Setting .env
               run: |
-                  echo "COOKIE_SECRET=COOKIE_SECRET" >> .env
+                  echo "COOKIE_SECRET=$COOKIE_SECRET" >> .env
                   echo "DB_HOST"=$DB_HOST" >> .env
                   echo "DB_PORT"=$DB_PORT" >> .env
                   echo "DB_USERNAME"=$DB_USERNAME >> .env
