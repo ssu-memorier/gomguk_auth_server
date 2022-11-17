@@ -1,7 +1,7 @@
 const { jwt } = require('../../modules/jwt');
 
-const getPayloadFromJWT = async (req) => {
-    const payload = await jwt.getPayload(req.cookies.jwt.token);
+const getPayloadFromJWT = async (jwt) => {
+    const payload = await jwt.getPayload(jwt);
     return payload;
 };
 

@@ -14,7 +14,8 @@ router.use('/google', googleRouter);
 
 router.get('/profile', async (req, res) => {
     try {
-        const payload = await getPayloadFromJWT(req);
+        const jwt = await req.cookies.jwt.token;
+        const payload = await getPayloadFromJWT(jwt);
         const user = await User.findOne({
             where: {
                 email: payload.email,
@@ -34,7 +35,8 @@ router.get('/profile', async (req, res) => {
 });
 
 router.get('/logout', async (req, res) => {
-    const jwtPayload = await getPayloadFromJWT(req);
+    const jwt = await req.cookies.jwt.token;
+    const jwtPayload = await getPayloadFromJWT(jwt);
     if (jwtPayload.provider === 'kakao') {
         logoutModules.kakao(jwtPayload.accessToken);
     } else {
