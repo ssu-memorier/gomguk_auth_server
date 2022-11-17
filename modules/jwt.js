@@ -3,7 +3,7 @@ const {
     TOKEN_EXPIRED,
     TOKEN_INVALID,
     TOKEN_VERIFIED,
-} = require('../src/constants/tokenVerifyState');
+} = require('../src/constants/token');
 
 module.exports = {
     issue: async (user) => {
