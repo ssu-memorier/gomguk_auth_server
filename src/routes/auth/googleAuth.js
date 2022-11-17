@@ -1,6 +1,7 @@
 const express = require('express');
 const passport = require('passport');
 const jwt = require('../../../modules/jwt');
+const { JWT } = require('../../constants/token');
 const router = express.Router();
 
 router.get(
@@ -16,7 +17,7 @@ router.get(
     passport.authenticate('google', { session: false, failureRedirect: '/' }),
     async (req, res) => {
         const jwtToken = await jwt.issue(req.user);
-        res.cookie('jwt', jwtToken, {
+        res.cookie(JWT, jwtToken, {
             httpOnly: true,
             secure: true,
         }).redirect('/');
