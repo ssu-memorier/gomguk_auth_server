@@ -23,7 +23,7 @@ jobs:
                   echo "DB_HOST"=$DB_HOST" >> .env
                   echo "DB_PORT"=$DB_PORT" >> .env
                   echo "DB_USERNAME"=$DB_USERNAME >> .env
-                  echo "DB_PASSWORD"=$DB_PASSWORK >> .env
+                  echo "DB_PASSWORD"=$DB_PASSWORD >> .env
                   echo "DB_DATABASE"=$DB_DATABASE >> .env
                   echo "KAKAO_ID=$KAKAO_ID" >> .env
                   echo "KAKAO_ADMIN_KEY=$KAKAO_ADMIN_KEY" >> .env
@@ -33,7 +33,7 @@ jobs:
                   DB_HOST: ${{ secrets.DB_HOST }}
                   DB_PORT: ${{ secrets.DB_PORT }}
                   DB_USERNAME: ${{ secrets.DB_USERNAME }}
-                  DB_PASSWORD: ${{ secrets.DB_PASSWORK }}
+                  DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
                   DB_DATABASE: ${{ secrets.DB_DATABASE }}
                   COOKIE_SECRET: ${{ secrets.COOKIE_SECRET }}
                   KAKAO_ID: ${{ secrets.KAKAO_ID }}
