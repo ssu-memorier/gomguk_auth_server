@@ -1,7 +1,7 @@
 const { jwt } = require('../../modules/jwt');
 
-const getPayloadFromJWT = async (jwtToken) => {
-    const payload = await jwt.getPayload(jwtToken);
+const getPayloadFromJWT = async (token) => {
+    const payload = await jwt.getPayload(token);
     return payload;
 };
 
