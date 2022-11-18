@@ -1,10 +1,11 @@
 const express = require('express');
-const jwt = require('../../../modules/jwt');
 const User = require('../../../models/user');
 const logoutModules = require('../../../modules/oauth/logout');
-
 const kakaoRouter = require('./kakaoAuth');
 const googleRouter = require('./googleAuth');
+
+const { JWT } = require('../../constants/token');
+const { getPayloadFromJWT } = require('../../utils/getPayloadFromJWT');
 
 const router = express.Router();
 
@@ -13,7 +14,8 @@ router.use('/google', googleRouter);
 
 router.get('/profile', async (req, res) => {
     try {
-        const payload = await jwt.getPayload(req.cookies.jwt.token);
+        const jwt = await req.cookies.jwt.token;
+        const payload = await getPayloadFromJWT(jwt);
         const user = await User.findOne({
             where: {
                 email: payload.email,
@@ -33,21 +35,17 @@ router.get('/profile', async (req, res) => {
 });
 
 router.get('/logout', async (req, res) => {
-    const jwtPayload = await getPayload(req);
+    const jwt = await req.cookies.jwt.token;
+    const jwtPayload = await getPayloadFromJWT(jwt);
     if (jwtPayload.provider === 'kakao') {
         logoutModules.kakao(jwtPayload.accessToken);
     } else {
         logoutModules.google(jwtPayload.accessToken);
     }
-    res.cookie('jwt', null, { maxAge: 0 });
+    res.cookie(JWT, null, { maxAge: 0 });
     req.logout(() => {
         res.redirect('/');
     });
 });
-
-const getPayload = async (req) => {
-    const payload = await jwt.getPayload(req.cookies.jwt.token);
-    return payload;
-};
 
 module.exports = router;
