@@ -8,7 +8,6 @@ const passport = require('passport');
 
 const { sequelize } = require('./models');
 const authRouter = require('./src/routes/auth');
-const reqRouter = require('./src/routes/req');
 
 dotenv.config();
 const passportConfig = require('./modules/passport');
@@ -27,7 +26,6 @@ app.use(passport.initialize());
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/auth', authRouter);
-app.use('/req', reqRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
