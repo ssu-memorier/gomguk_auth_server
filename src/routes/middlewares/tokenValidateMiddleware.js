@@ -7,42 +7,31 @@ const {
     JWT,
 } = require('../../constants/token');
 
-const checkExpired = async (res, payload) => {
-    const currentTime = Math.floor(new Date().getTime() / 1000);
-    const leftTime = payload.exp - currentTime;
-
-    if (leftTime < ONE_HOUR) {
-        res.cookie(JWT, null, { maxAge: 0 });
-        const newJwtToken = await jwt.issue(payload);
-        res.cookie(JWT, newJwtToken, {
-            httpOnly: true,
-            secure: true,
-        });
-        return;
-    }
-    return;
-};
-
 exports.isTokenValid = async (req, res, next) => {
     try {
-        const jwtToken = req.cookies.jwt.token;
+        const jwtToken = req.query.jwt;
         const verifyState = await jwt.verify(jwtToken);
         switch (verifyState) {
             case TOKEN_VERIFIED:
-                const payload = await jwt.getPayload(jwtToken);
-                await checkExpired(res, payload);
-                next();
+                res.status(200).json({
+                    code: 200,
+                    msg: 'token verified',
+                });
                 break;
             case TOKEN_EXPIRED:
                 res.cookie(JWT, null, { maxAge: 0 });
                 req.logout(() => {
                     res.redirect('/');
                 });
+                res.status(401).json({
+                    code: 401,
+                    msg: 'token expired',
+                });
                 break;
             case TOKEN_INVALID:
                 res.status(401).json({
                     code: 401,
-                    msg: 'unauthorized',
+                    msg: 'unauthorized token',
                 });
         }
     } catch (err) {
