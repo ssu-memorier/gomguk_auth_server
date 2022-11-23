@@ -12,11 +12,10 @@ module.exports = {
             provider: user.provider,
             accessToken: user.accessToken,
         };
-        const result = {
-            token: jwt.sign(payload, process.env.JWT_SECRET, {
-                expiresIn: '6h',
-            }),
-        };
+        const result = jwt.sign(payload, process.env.JWT_SECRET, {
+            expiresIn: '6h',
+        });
+
         return result;
     },
     verify: async (token) => {

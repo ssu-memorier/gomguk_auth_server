@@ -3,18 +3,20 @@ const User = require('../../../models/user');
 const logoutModules = require('../../../modules/oauth/logout');
 const kakaoRouter = require('./kakaoAuth');
 const googleRouter = require('./googleAuth');
+const validTokenRouter = require('./validToken');
 
 const { JWT } = require('../../constants/token');
-const { getPayloadFromJWT } = require('../../utils/getPayloadFromJWT');
+const getPayloadFromJWT = require('../../utils/getPayloadFromJWT');
 
 const router = express.Router();
 
 router.use('/kakao', kakaoRouter);
 router.use('/google', googleRouter);
+router.use('/valid-token', validTokenRouter);
 
 router.get('/profile', async (req, res) => {
     try {
-        const jwt = await req.cookies.jwt.token;
+        const jwt = req.cookies.jwt;
         const payload = await getPayloadFromJWT(jwt);
         const user = await User.findOne({
             where: {
