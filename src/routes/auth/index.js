@@ -4,6 +4,7 @@ const logoutModules = require('../../../modules/oauth/logout');
 const kakaoRouter = require('./kakaoAuth');
 const googleRouter = require('./googleAuth');
 const validTokenRouter = require('./validToken');
+const refreshTokenRouter = require('./refresh');
 
 const { JWT } = require('../../constants/token');
 const getPayloadFromJWT = require('../../utils/getPayloadFromJWT');
@@ -13,6 +14,7 @@ const router = express.Router();
 router.use('/kakao', kakaoRouter);
 router.use('/google', googleRouter);
 router.use('/valid-token', validTokenRouter);
+router.use('/refresh-token', refreshTokenRouter);
 
 router.get('/profile', async (req, res) => {
     try {
@@ -37,7 +39,7 @@ router.get('/profile', async (req, res) => {
 });
 
 router.get('/logout', async (req, res) => {
-    const jwt = await req.cookies.jwt.token;
+    const jwt = await req.cookies.jwt;
     const jwtPayload = await getPayloadFromJWT(jwt);
     if (jwtPayload.provider === 'kakao') {
         logoutModules.kakao(jwtPayload.accessToken);
