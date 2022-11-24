@@ -1,6 +1,6 @@
 const axios = require('axios');
 const User = require('../../models/user');
-const { KAKAO_LOGOUT_URL } = require('../../src/constants/kakaoLogoutUrl');
+const { KAKAO_LOGOUT_URL } = require('../../src/constants/kakaoUrl');
 
 module.exports = {
     kakao: async (token) => {
