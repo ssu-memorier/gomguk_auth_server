@@ -7,16 +7,11 @@ const {
 } = require('../../utils/getNewToken');
 const issueNewJWT = require('../../utils/issueNewJWT');
 const { JWT } = require('../../constants/token');
-const { EXTRACT_TOKEN_REG } = require('../../constants/regularExpression');
 
 const router = express.Router();
 
 router.get('/', async (req, res) => {
-    const extractTokenReg = new RegExp(EXTRACT_TOKEN_REG);
-    const reqAccessToken = req.headers['authorization'].replace(
-        extractTokenReg,
-        ''
-    );
+    const reqAccessToken = req.headers['authorization'].split(' ')[1];
     const user = await User.findOne({
         where: { accessToken: reqAccessToken },
     });
