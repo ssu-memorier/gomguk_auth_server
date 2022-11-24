@@ -1,14 +1,18 @@
 const express = require('express');
 
 const User = require('../../../models/user');
-const getNewTokenFromKakao = require('../../utils/getNewTokenFromKakao');
+const {
+    getNewTokenFromKakao,
+    getNewTokenFromGoogle,
+} = require('../../utils/getNewToken');
 const issueNewJWT = require('../../utils/issueNewJWT');
 const { JWT } = require('../../constants/token');
+const { EXTRACT_TOKEN_REG } = require('../../constants/regularExpression');
 
 const router = express.Router();
 
 router.get('/', async (req, res) => {
-    const extractTokenReg = new RegExp(/^Bearer\s+/);
+    const extractTokenReg = new RegExp(EXTRACT_TOKEN_REG);
     const reqAccessToken = req.headers['authorization'].replace(
         extractTokenReg,
         ''
@@ -17,14 +21,20 @@ router.get('/', async (req, res) => {
         where: { accessToken: reqAccessToken },
     });
     const refreshToken = user.refreshToken;
-    const newTokenData = await getNewTokenFromKakao(refreshToken);
-    const [newAT, newRT] = [
-        newTokenData.access_token,
-        newTokenData.refresh_token,
-    ];
-
-    try {
+    const provider = user.provider;
+    if (provider === 'kakao') {
+        const newTokenData = await getNewTokenFromKakao(refreshToken);
+        const [newAT, newRT] = [
+            newTokenData.access_token,
+            newTokenData.refresh_token,
+        ];
         await user.update({ accessToken: newAT, refreshToken: newRT });
+    } else {
+        const newTokenData = await getNewTokenFromGoogle(refreshToken);
+        const newAT = newTokenData.access_token;
+        await user.update({ accessToken: newAT });
+    }
+    try {
         const newJWT = await issueNewJWT(user);
         res.cookie(JWT, null, { maxAge: 0 });
         res.cookie(JWT, newJWT, {
