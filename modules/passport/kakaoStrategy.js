@@ -23,7 +23,10 @@ module.exports = () => {
                     });
                     if (exUser) {
                         await User.update(
-                            { accessToken: accessToken },
+                            {
+                                accessToken: accessToken,
+                                refreshToken: refreshToken,
+                            },
                             { where: { snsId: profile.id } }
                         );
                         exUser = await User.findOne({
