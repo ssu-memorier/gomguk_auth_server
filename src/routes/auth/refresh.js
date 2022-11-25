@@ -34,7 +34,7 @@ router.get('/', async (req, res) => {
     }
     try {
         const newJWT = await issueNewJWT(user);
-        res.cookie(JWT, null, { maxAge: 0 });
+        res.cookie(JWT, null, { domain: '.paas-ta.org', maxAge: 0 });
         res.cookie(JWT, newJWT, {
             domain: '.paas-ta.org',
             httpOnly: true,

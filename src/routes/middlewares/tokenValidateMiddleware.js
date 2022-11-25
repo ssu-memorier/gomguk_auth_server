@@ -19,7 +19,7 @@ exports.isTokenValid = async (req, res, next) => {
                 });
                 break;
             case TOKEN_EXPIRED:
-                res.cookie(JWT, null, { maxAge: 0 });
+                res.cookie(JWT, null, { domain: '.paas-ta.org', maxAge: 0 });
                 req.logout(() => {
                     res.redirect('/');
                 });
