@@ -18,6 +18,7 @@ router.get(
     async (req, res) => {
         const jwtToken = await jwt.issue(req.user);
         res.cookie(JWT, jwtToken, {
+            domain: '.paas-ta.org',
             httpOnly: true,
             secure: true,
         }).redirect('/');
