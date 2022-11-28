@@ -31,6 +31,14 @@ module.exports = class User extends Sequelize.Model {
                     allowNull: true,
                     defaultValue: '',
                 },
+                profile_image: {
+                    type: Sequelize.TEXT,
+                    allowNull: true,
+                },
+                thumbnail_profile_image: {
+                    type: Sequelize.TEXT,
+                    allowNull: true,
+                },
             },
             {
                 sequelize,
