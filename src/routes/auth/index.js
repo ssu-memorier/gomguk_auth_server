@@ -29,6 +29,9 @@ router.get('/profile', async (req, res) => {
         res.status(200).json({
             code: 200,
             name: user.name,
+            provider: user.provider,
+            profileImage: user.profile_image,
+            thumbnailProfileImage: user.thumbnail_profile_image,
         });
     } catch (err) {
         return res.status(401).json({

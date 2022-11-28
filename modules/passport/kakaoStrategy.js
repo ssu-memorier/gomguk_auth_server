@@ -44,6 +44,10 @@ module.exports = () => {
                             provider: 'kakao',
                             accessToken: accessToken,
                             refreshToken: refreshToken,
+                            profile_image:
+                                profile._json.properties.profile_image,
+                            thumbnail_profile_image:
+                                profile._json.properties.thumbnail_image,
                         });
                         done(null, newUser);
                     }

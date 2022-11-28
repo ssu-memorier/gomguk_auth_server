@@ -15,7 +15,7 @@ module.exports = () => {
             },
             async (accessToken, refreshToken, profile, done) => {
                 const {
-                    _json: { sub, name, email },
+                    _json: { sub, name, email, picture },
                 } = profile;
                 try {
                     let exUser = await User.findOne({
@@ -43,6 +43,8 @@ module.exports = () => {
                             provider: 'google',
                             accessToken: accessToken,
                             refreshToken: refreshToken,
+                            profile_image: picture,
+                            thumbnail_profile_image: picture,
                         });
                         done(null, newUser);
                     }
