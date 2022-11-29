@@ -3,8 +3,6 @@ const {
     TOKEN_EXPIRED,
     TOKEN_INVALID,
     TOKEN_VERIFIED,
-    ONE_HOUR,
-    JWT,
 } = require('../../constants/token');
 
 exports.isTokenValid = async (req, res, next) => {
@@ -19,19 +17,15 @@ exports.isTokenValid = async (req, res, next) => {
                 });
                 break;
             case TOKEN_EXPIRED:
-                res.cookie(JWT, null, { domain: '.paas-ta.org', maxAge: 0 });
-                req.logout(() => {
-                    res.redirect('/');
-                });
                 res.status(401).json({
                     code: 401,
-                    msg: 'token expired',
+                    msg: 'REFRESH_LOGIN',
                 });
                 break;
             case TOKEN_INVALID:
                 res.status(401).json({
                     code: 401,
-                    msg: 'unauthorized token',
+                    msg: 'INVALID_TOKEN',
                 });
         }
     } catch (err) {
